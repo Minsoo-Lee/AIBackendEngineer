@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '4.1.0'
+    id 'org.springframework.boot' version '3.4.5'
     id 'io.spring.dependency-management' version '1.1.7'
 }
 
@@ -18,9 +18,34 @@ repositories {
     mavenCentral()
 }
 
+ext {
+    set('springAiVersion', "1.1.2")
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
+    }
+}
+
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
-    testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    runtimeOnly 'org.postgresql:postgresql'
+
+    // Spring AI - Chat (Gemini OpenAI 호환)
+    implementation 'org.springframework.ai:spring-ai-starter-model-openai'
+
+    // Spring AI - Embedding (Gemini 전용)
+    implementation 'org.springframework.ai:spring-ai-starter-model-google-genai-embedding'
+
+    // Spring AI - pgvector
+    implementation 'org.springframework.ai:spring-ai-starter-vector-store-pgvector'
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
