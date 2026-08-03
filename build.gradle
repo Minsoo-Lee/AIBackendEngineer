@@ -29,18 +29,16 @@ dependencyManagement {
 }
 
 dependencies {
+    implementation platform("org.springframework.ai:spring-ai-bom:1.0.0")
+
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     runtimeOnly 'org.postgresql:postgresql'
 
-    // Spring AI - Chat (Gemini OpenAI 호환)
     implementation 'org.springframework.ai:spring-ai-starter-model-openai'
-
-    // Spring AI - Embedding (Gemini 전용)
     implementation 'org.springframework.ai:spring-ai-starter-model-google-genai-embedding'
-
-    // Spring AI - pgvector
     implementation 'org.springframework.ai:spring-ai-starter-vector-store-pgvector'
+    implementation 'org.springframework.ai:spring-ai-advisors-vector-store'
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
