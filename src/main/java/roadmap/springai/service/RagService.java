@@ -3,8 +3,10 @@ package roadmap.springai.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.SafeGuardAdvisor;
 import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
+import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ public class RagService {
 
     private final ChatClient.Builder chatClientBuilder;
     private final VectorStore vectorStore;
+    private final ChatMemory chatMemory;
 
     public String answer(String question) {
         return chatClientBuilder.build()
@@ -118,6 +121,25 @@ public class RagService {
                                         .build())
                                 .build()
                 )
+                .user(question)
+                .call()
+                .content();
+    }
+
+    public String chat(String question, String conversationId) {
+        return chatClientBuilder.build()
+                .prompt()
+                .advisors(
+                        MessageChatMemoryAdvisor.builder(chatMemory).build(),
+                        QuestionAnswerAdvisor.builder(vectorStore)
+                                .searchRequest(
+                                        SearchRequest.builder()
+                                                .similarityThreshold(0.6)
+                                                .topK(3)
+                                                .build())
+                                .build()
+                )
+                .advisors(a -> a.param(ChatMemory.CONVERSATION_ID, conversationId))
                 .user(question)
                 .call()
                 .content();

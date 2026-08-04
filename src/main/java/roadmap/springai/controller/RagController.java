@@ -47,4 +47,10 @@ public class RagController {
     public String safeAnswerV3(@RequestParam String question) {
         return ragService.safeAnswerV3(question);
     }
+
+    @GetMapping("/chat")
+    public String chat(@RequestParam String question,
+                       @RequestParam String conversationId) {
+        return ragService.chat(question, conversationId);
+    }
 }
