@@ -7,6 +7,7 @@ import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvi
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 @Slf4j
 @Service
@@ -26,6 +27,19 @@ public class RagService {
                 )
                 .user(question)
                 .call()
+                .content();
+    }
+
+    public Flux<String> stream(String question) {
+        return chatClientBuilder.build()
+                .prompt()
+                .advisors(QuestionAnswerAdvisor.builder(vectorStore)
+                        .searchRequest(
+                                SearchRequest.builder().similarityThreshold(0.6).topK(3).build())
+                                .build()
+                        )
+                .user(question)
+                .stream()
                 .content();
     }
 }
