@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,7 +22,15 @@ public class RagController {
 
     @GetMapping
     public String rag(@RequestParam String question) {
-        return ragService.answer(question);
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        String result = ragService.answer(question);
+
+        stopWatch.stop();
+        log.info("⏱️ 응답 시간: {}ms", stopWatch.getTotalTimeMillis());
+
+        return result;
     }
 
     @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)

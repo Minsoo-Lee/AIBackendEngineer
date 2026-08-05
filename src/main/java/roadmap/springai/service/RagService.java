@@ -9,6 +9,7 @@ import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvi
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
@@ -23,6 +24,7 @@ public class RagService {
     private final VectorStore vectorStore;
     private final ChatMemory chatMemory;
 
+    @Cacheable(value = "ragCache", key = "#question")
     public String answer(String question) {
         return chatClientBuilder.build()
                 .prompt()

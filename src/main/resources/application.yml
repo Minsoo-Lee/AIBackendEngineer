@@ -14,6 +14,8 @@ spring:
       api-key: ${GEMINI_API_KEY}
       base-url: https://generativelanguage.googleapis.com/v1beta/openai
       chat:
+        base-url: https://generativelanguage.googleapis.com/v1beta/openai
+        completions-path: /chat/completions
         options:
           model: gemini-2.5-flash-lite
     google:
@@ -39,6 +41,11 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
 
   application:
     name: springAI
