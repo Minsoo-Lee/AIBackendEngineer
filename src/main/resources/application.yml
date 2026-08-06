@@ -33,7 +33,7 @@ spring:
         distance-type: COSINE_DISTANCE
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/springai
+    url: jdbc:postgresql://${DB_HOST:localhost}:5432/springai
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
@@ -44,8 +44,8 @@ spring:
 
   data:
     redis:
-      host: localhost
-      port: 6379
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
 
   application:
     name: springAI

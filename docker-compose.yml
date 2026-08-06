@@ -4,8 +4,8 @@ services:
     container_name: postgres-pgvector
     environment:
       POSTGRES_DB: springai
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
@@ -16,6 +16,20 @@ services:
     container_name: redis
     ports:
       - "6379:6379"
+
+  springai:
+    build: .
+    container_name: springai
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    environment:
+      DB_HOST: postgres
+      REDIS_HOST: redis
+    depends_on:
+      - postgres
+      - redis
 
 volumes:
   pgdata:

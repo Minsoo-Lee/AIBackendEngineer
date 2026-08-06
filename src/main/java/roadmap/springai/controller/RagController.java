@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import roadmap.springai.service.RagService;
 
+import java.security.Principal;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -20,12 +22,30 @@ public class RagController {
 
     private final RagService ragService;
 
-    @GetMapping
-    public String rag(@RequestParam String question) {
+    @GetMapping("/v1")
+    public String ragV1(@RequestParam String question) {
+        return ragService.answerV1(question);
+    }
+
+    @GetMapping("/v2")
+    public String ragV2(@RequestParam String question) {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        String result = ragService.answer(question);
+        String result = ragService.answerV2(question);
+
+        stopWatch.stop();
+        log.info("⏱️ 응답 시간: {}ms", stopWatch.getTotalTimeMillis());
+
+        return result;
+    }
+
+    @GetMapping("/v3")
+    public String ragV3(@RequestParam String question, Principal principal) {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        String result = ragService.answerV3(question, principal.getName());
 
         stopWatch.stop();
         log.info("⏱️ 응답 시간: {}ms", stopWatch.getTotalTimeMillis());

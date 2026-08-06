@@ -23,9 +23,25 @@ public class RagService {
     private final ChatClient.Builder chatClientBuilder;
     private final VectorStore vectorStore;
     private final ChatMemory chatMemory;
+    private final RagCacheService ragCacheService;
+
+    private final TokenTrackingService tokenTrackingService;
+
+    public String answerV1(String question) {
+        return chatClientBuilder.build()
+                .prompt()
+                .advisors(QuestionAnswerAdvisor.builder(vectorStore)
+                        .searchRequest(
+                                SearchRequest.builder().similarityThreshold(0.6).topK(3).build())
+                        .build()
+                )
+                .user(question)
+                .call()
+                .content();
+    }
 
     @Cacheable(value = "ragCache", key = "#question")
-    public String answer(String question) {
+    public String answerV2(String question) {
         return chatClientBuilder.build()
                 .prompt()
                 .advisors(QuestionAnswerAdvisor.builder(vectorStore)
@@ -36,6 +52,11 @@ public class RagService {
                 .user(question)
                 .call()
                 .content();
+    }
+
+    public String answerV3(String question, String username) {
+        tokenTrackingService.increment(username);
+        return ragCacheService.cachedAnswer(question);
     }
 
     public Flux<String> stream(String question) {
