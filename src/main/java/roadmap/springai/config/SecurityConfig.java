@@ -26,6 +26,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/", "/index.html", "/*.html", "/static/**").permitAll()  // ← 추가
+                        .requestMatchers("/rag/stream").permitAll()  // ← 추가
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex
