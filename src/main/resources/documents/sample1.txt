@@ -1,3 +1,23 @@
-Spring AI는 Java 개발자를 위한 AI 프레임워크입니다.
-Spring Boot와 통합하여 LLM, 임베딩, 벡터 스토어를 쉽게 사용할 수 있습니다.
-RAG 파이프라인 구현을 간단하게 만들어줍니다.
+Spring AI RAG Pipeline 프로젝트 소개
+
+이 프로젝트는 Spring AI와 pgvector를 활용한 RAG(Retrieval Augmented Generation) 파이프라인 구현 프로젝트입니다.
+
+RAG란 외부 문서에서 관련 정보를 검색하여 LLM에 주입한 후 답변을 생성하는 방식입니다. 이를 통해 LLM의 환각(Hallucination) 문제를 줄이고 정확한 답변을 생성할 수 있습니다.
+
+주요 기능으로는 RAG 파이프라인, SSE 스트리밍, 프롬프트 인젝션 방어, 멀티턴 컨텍스트, Redis 캐싱, JWT 인증, 토큰 추적, Docker Compose 배포가 있습니다.
+
+RAG 파이프라인은 문서 임베딩, pgvector 저장, 유사도 검색, LLM 응답 생성 순서로 동작합니다.
+
+SSE 스트리밍은 Server-Sent Events 방식으로 LLM 응답을 실시간으로 청크 단위로 전달합니다. ChatGPT처럼 답변이 타이핑되듯 나오는 방식입니다.
+
+프롬프트 인젝션 방어는 4단계로 구현되어 있습니다. V1은 시스템 프롬프트로 역할을 고정하고, V2는 커스텀 키워드 블랙리스트로 필터링하며, V3는 Spring AI 내장 SafeGuardAdvisor를 사용합니다. Indirect 방어는 문서 저장 전 악의적 내용을 검증합니다.
+
+멀티턴 컨텍스트는 MessageChatMemoryAdvisor를 사용하여 이전 대화 내용을 기억합니다. conversationId로 대화 세션을 관리합니다.
+
+Redis 캐싱은 동일한 질문이 반복될 때 Redis에 저장된 답변을 바로 반환하여 API 호출 비용을 절감합니다.
+
+JWT 인증은 Spring Security와 JWT 토큰 기반 인증을 구현하여 인증된 사용자만 API에 접근할 수 있도록 합니다.
+
+토큰 추적은 사용자별 API 호출 횟수를 Redis에 저장하여 비용 모니터링이 가능합니다.
+
+Docker Compose로 Spring Boot, PostgreSQL, Redis를 한 번에 실행할 수 있습니다.

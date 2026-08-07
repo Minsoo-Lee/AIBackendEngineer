@@ -1,3 +1,19 @@
-pgvector는 PostgreSQL에서 벡터 검색을 가능하게 해주는 확장입니다.
-코사인 유사도, L2 거리 등 다양한 검색 방식을 지원합니다.
-임베딩된 데이터를 효율적으로 저장하고 검색할 수 있습니다.
+Spring AI 핵심 기술 설명
+
+Spring AI는 Java 개발자를 위한 AI 프레임워크입니다. Spring Boot와 통합하여 LLM, 임베딩, 벡터 스토어를 쉽게 사용할 수 있도록 지원합니다.
+
+ChatClient는 Spring AI에서 LLM과 대화하는 핵심 인터페이스입니다. ChatClient.Builder를 주입받아 build()로 생성합니다. prompt()로 프롬프트를 작성하고 call()로 LLM을 호출합니다. stream()을 사용하면 Flux<String>으로 스트리밍 응답을 받을 수 있습니다.
+
+VectorStore는 임베딩을 저장하고 유사도 검색을 수행하는 인터페이스입니다. pgvector가 VectorStore의 구현체 중 하나입니다. add()로 임베딩을 저장하고 similaritySearch()로 유사한 문서를 검색합니다.
+
+EmbeddingModel은 텍스트를 벡터로 변환하는 모델입니다. embed()로 텍스트를 임베딩으로 변환합니다. 이 프로젝트에서는 Gemini Embedding 001 모델을 사용하며 768차원 벡터를 생성합니다.
+
+QuestionAnswerAdvisor는 RAG를 ChatClient에 쉽게 통합하는 Advisor입니다. VectorStore에서 관련 문서를 검색하고 LLM에 주입하는 과정을 자동으로 처리합니다. SearchRequest로 similarityThreshold와 topK를 설정할 수 있습니다.
+
+MessageChatMemoryAdvisor는 대화 기록을 관리하는 Advisor입니다. conversationId로 대화 세션을 구분하고 이전 대화 내용을 LLM에 주입합니다. InMemoryChatMemoryRepository를 기본 저장소로 사용합니다.
+
+SafeGuardAdvisor는 프롬프트 인젝션을 방어하는 Spring AI 내장 Advisor입니다. 블랙리스트 키워드가 포함된 입력을 차단하고 커스텀 차단 메시지를 반환합니다.
+
+TokenTextSplitter는 문서를 청크 단위로 분할하는 클래스입니다. Builder 패턴으로 chunkSize와 minChunkSizeChars를 설정할 수 있습니다.
+
+pgvector는 PostgreSQL에서 벡터 검색을 가능하게 해주는 확장입니다. 코사인 유사도, L2 거리 등 다양한 검색 방식을 지원합니다. Spring AI의 VectorStore와 연동하여 임베딩 저장 및 검색에 활용합니다.
