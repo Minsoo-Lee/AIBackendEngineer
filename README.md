@@ -17,6 +17,7 @@ Spring AI와 pgvector를 활용한 RAG(Retrieval Augmented Generation) 파이프
 | Security | Spring Security + JWT |
 | Build | Gradle |
 | Infra | Docker Compose |
+| API Docs | Swagger UI (springdoc-openapi) |
 
 ## 주요 기능
 
@@ -85,6 +86,9 @@ docker-compose up --build
 
 Spring Boot + PostgreSQL + Redis가 한 번에 실행됩니다.
 
+### 3. Swagger UI
+http://localhost:8080/swagger-ui/index.html
+
 ## API 엔드포인트
 
 > 🔒 `/auth/login`을 제외한 모든 엔드포인트는 JWT 토큰이 필요합니다.
@@ -120,3 +124,4 @@ Spring Boot + PostgreSQL + Redis가 한 번에 실행됩니다.
 - `.env` 파일을 `.gitignore`에 추가하여 API 키가 GitHub에 노출되지 않도록 하세요.
 - 앱 시작 시 `DataInitializer`가 `vector_store` 테이블을 초기화하고 샘플 문서를 다시 저장합니다.
 - 테스트용 계정: `username: user`, `password: password` (실제 프로덕션에서는 DB 연동 필요)
+- 브라우저에서 http://localhost:8080/index.html 로 RAG 테스트 가능
