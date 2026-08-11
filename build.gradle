@@ -6,7 +6,7 @@ plugins {
 
 group = 'roadmap'
 version = '0.0.1-SNAPSHOT'
-description = 'springAI'
+description = 'ragPipeline'
 
 java {
     toolchain {

@@ -17,9 +17,9 @@ services:
     ports:
       - "6379:6379"
 
-  springai:
+  ragpipeline:
     build: .
-    container_name: springai
+    container_name: ragpipeline
     ports:
       - "8080:8080"
     env_file:
@@ -30,6 +30,9 @@ services:
     depends_on:
       - postgres
       - redis
+    volumes:
+      - gradle_cache:/root/.gradle  # ← 추가
 
 volumes:
   pgdata:
+  gradle_cache:
