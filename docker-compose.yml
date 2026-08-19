@@ -30,9 +30,19 @@ services:
     depends_on:
       - postgres
       - redis
-    volumes:
-      - gradle_cache:/root/.gradle  # ← 추가
+
+  aiagent:
+    build: ../aiAgent
+    container_name: aiagent
+    ports:
+      - "8081:8081"
+    env_file:
+      - ../aiAgent/.env
+    environment:
+      DB_HOST: postgres
+    depends_on:
+      - postgres
+      - ragpipeline
 
 volumes:
   pgdata:
-  gradle_cache:
