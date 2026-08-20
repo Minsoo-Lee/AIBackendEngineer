@@ -7,15 +7,15 @@ Spring AI와 pgvector를 활용한 RAG(Retrieval Augmented Generation) 파이프
 | 분류 | 기술 |
 |---|---|
 | Language | Java 21 |
-| Framework | Spring Boot 3.4.5 |
-| AI Framework | Spring AI 1.1.2 |
-| Chat Model | Gemini 2.5 Flash Lite (OpenAI 호환 엔드포인트) |
+| Framework | Spring Boot 4.0.0 |
+| AI Framework | Spring AI 2.0.0 |
+| Chat Model | Gemini 3.5 Flash Lite (Google GenAI SDK) |
 | Embedding Model | Gemini Embedding 001 (Google GenAI) |
 | Vector Store | PostgreSQL + pgvector |
 | Cache | Redis |
 | Streaming | Spring WebFlux (SSE) |
 | Security | Spring Security + JWT |
-| Build | Gradle |
+| Build | Gradle 8.14+ |
 | Infra | Docker Compose |
 | API Docs | Swagger UI (springdoc-openapi) |
 
@@ -55,13 +55,14 @@ src/main/java/roadmap/springai/
 │   ├── RagService.java                # RAG 응답 생성
 │   └── TokenTrackingService.java      # API 호출 횟수 추적
 └── util/
-    ├── DataInitializer.java           # 앱 시작 시 문서 자동 저장
+    ├── DataInitializer.java           # 앱 시작 시 문서 자동 저장 (중복 저장 방지)
     └── JwtUtil.java                   # JWT 생성 / 검증
 ```
 
 ## 실행 방법
 
 ### 사전 요구사항
+
 - Docker Desktop
 - Gemini API 키 (Google AI Studio에서 발급)
 
@@ -80,19 +81,19 @@ JWT_SECRET=your_jwt_secret_key_here
 
 ### 2. 전체 스택 실행
 
-```bash
+```
 docker-compose up --build
 ```
 
-Spring Boot + PostgreSQL + Redis가 한 번에 실행됩니다.
+PostgreSQL + Redis + ragPipeline + aiAgent(포트폴리오 2번, `../aiAgent` 형제 폴더)가 한 번에 실행됩니다.
 
 ### 3. Swagger UI
+
 http://localhost:8080/swagger-ui/index.html
 
 ## API 엔드포인트
 
-> 🔒 `/auth/login`을 제외한 모든 엔드포인트는 JWT 토큰이 필요합니다.
-> `Authorization: Bearer {token}` 헤더에 포함해서 요청하세요.
+> 🔒 `/auth/login`을 제외한 모든 엔드포인트는 JWT 토큰이 필요합니다. `Authorization: Bearer {token}` 헤더에 포함해서 요청하세요.
 
 | 메서드 | 엔드포인트 | 설명 |
 |---|---|---|
@@ -122,6 +123,7 @@ http://localhost:8080/swagger-ui/index.html
 ## 주의사항
 
 - `.env` 파일을 `.gitignore`에 추가하여 API 키가 GitHub에 노출되지 않도록 하세요.
-- 앱 시작 시 `DataInitializer`가 `vector_store` 테이블을 초기화하고 샘플 문서를 다시 저장합니다.
+- 앱 시작 시 `DataInitializer`가 `vector_store`에 데이터가 없을 때만 샘플 문서를 저장합니다 (재시작 시 임베딩 API 재호출로 인한 비용 발생을 방지).
 - 테스트용 계정: `username: user`, `password: password` (실제 프로덕션에서는 DB 연동 필요)
 - 브라우저에서 http://localhost:8080/index.html 로 RAG 테스트 가능
+- Google GenAI 설정에서 `project-id`를 넣으면 Vertex AI 모드로 전환되어 API 키 방식이 거부됩니다. API 키 방식만 쓸 경우 `project-id`, `location`을 넣지 마세요.
